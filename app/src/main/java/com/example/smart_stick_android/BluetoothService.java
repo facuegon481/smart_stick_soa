@@ -143,7 +143,6 @@ public class BluetoothService extends Service
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
-        //Constructor de la clase del hilo secundario
         public ConnectedThread(BluetoothSocket socket)
         {
             InputStream tmpIn = null;
@@ -151,34 +150,33 @@ public class BluetoothService extends Service
 
             try
             {
-                //Create I/O streams for connection
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) { }
+            }
+            catch (IOException e)
+            {
+
+            }
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
         }
 
-        //metodo run del hilo, que va a entrar en una espera activa para recibir los msjs del HC05
         public void run()
         {
             byte[] buffer = new byte[256];
             int bytes;
 
-            //el hilo secundario se queda esperando mensajes del HC05
             while (true)
             {
                 try
                 {
-                    //se leen los datos del Bluethoot
                     bytes = mmInStream.read(buffer);
                     String readMessage = new String(buffer, 0, bytes);
 
-                    //se muestran en el layout de la activity, utilizando el handler del hilo
-                    // principal antes mencionado
                     bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
-                } catch (IOException e) {
+                } catch (IOException e)
+                {
                     break;
                 }
             }
