@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     static final float UMBRAL_ACELEROMETRO_MAYOR_DESDE = 3;
     static final float UMBRAL_ACELEROMETRO_MAYOR_HASTA = 11;
 
-    Button btnDesconectar;
     Button btnDistancia;
     Button btnBuzzer;
     EditText txtDistancia;
@@ -77,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         //Seteamos los valores para vista
-        btnDesconectar = (Button) findViewById(R.id.btnDesconectar);
         btnDistancia = (Button) findViewById(R.id.btnDistancia);
         btnBuzzer = (Button) findViewById(R.id.btnBuzzer);
         txtDistancia = (EditText) findViewById(R.id.txtDistancia);
