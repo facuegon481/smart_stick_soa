@@ -16,30 +16,27 @@ import android.widget.Toast;
 
 import java.util.Set;
 
-public class DispositivosVinculadosActivity extends AppCompatActivity {
-
-    // Depuración de LOGCAT
+public class DispositivosVinculadosActivity extends AppCompatActivity
+{
     private static final String TAG = "DispositivosVinculados";
-    // Declaracion de ListView
     ListView devicesList;
-    // String que se enviara a la actividad principal, mainactivity
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
-    // Declaracion de campos
     private BluetoothAdapter mBtAdapter;
     private ArrayAdapter mPairedDevicesArrayAdapter;
 
     private DispositivosVinculadosActivity _this;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dispositivos_vinculados);
         _this = this;
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
-        //---------------------------------------------------------------------
         VerificarEstadoBT();
         mPairedDevicesArrayAdapter = new ArrayAdapter(this, R.layout.dispositivos_encontrados);
         devicesList = (ListView) findViewById(R.id.devicesList);
@@ -47,27 +44,30 @@ public class DispositivosVinculadosActivity extends AppCompatActivity {
         devicesList.setOnItemClickListener(mDeviceClickListener);
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        try{
+        try
+        {
             Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
 
-            if (pairedDevices.size() > 0) {
-                for (BluetoothDevice device : pairedDevices) {
+            if (pairedDevices.size() > 0)
+            {
+                for (BluetoothDevice device : pairedDevices)
+                {
                     mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 }
             }
-        }catch(SecurityException e){
+        }
+        catch(SecurityException e)
+        {
             Log.e("err2", e.getMessage());
         }
 
-
-        //---------------------------------------------------------------------
     }
 
-    // Configura un (on-click) para la lista
-    private AdapterView.OnItemClickListener mDeviceClickListener = new AdapterView.OnItemClickListener() {
-        public void onItemClick(AdapterView av, View v, int arg2, long arg3) {
 
-            // Obtener la dirección MAC del dispositivo
+    private AdapterView.OnItemClickListener mDeviceClickListener = new AdapterView.OnItemClickListener()
+    {
+        public void onItemClick(AdapterView av, View v, int arg2, long arg3)
+        {
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
             finishAffinity();
@@ -84,20 +84,27 @@ public class DispositivosVinculadosActivity extends AppCompatActivity {
         }
     };
 
-    private void VerificarEstadoBT() {
-        // Comprueba que el dispositivo tiene Bluetooth y que está encendido.
+    private void VerificarEstadoBT()
+    {
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBtAdapter == null) {
+        if (mBtAdapter == null)
+        {
             Toast.makeText(getBaseContext(), "El dispositivo no soporta Bluetooth", Toast.LENGTH_SHORT).show();
-        } else {
-            if (mBtAdapter.isEnabled()) {
+        } else
+        {
+            if (mBtAdapter.isEnabled())
+            {
                 Log.d(TAG, "...Bluetooth Activado...");
-            } else {
+            } else
+            {
                 //Solicita al usuario que active Bluetooth
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                try{
+                try
+                {
                     startActivityForResult(enableBtIntent, 1);
-                }catch(SecurityException ex){
+                }
+                catch(SecurityException ex)
+                {
                     Log.e("err2", ex.getMessage());
                 }
             }

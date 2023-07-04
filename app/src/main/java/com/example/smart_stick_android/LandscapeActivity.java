@@ -19,8 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class LandscapeActivity extends AppCompatActivity implements SensorEventListener {
-
+public class LandscapeActivity extends AppCompatActivity implements SensorEventListener
+{
     static final float UMBRAL_ACELEROMETRO_MENOR_DESDE = -2;
     static final float UMBRAL_ACELEROMETRO_MENOR_HASTA = 2;
 
@@ -39,9 +39,10 @@ public class LandscapeActivity extends AppCompatActivity implements SensorEventL
     private Thread actualizarDistanciaThread ;
 
     EditText txtDistancia;
-private Timer timer;
+    private Timer timer;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.landscape);
         txtDistancia = (EditText) findViewById(R.id.txtDistancia);
@@ -53,42 +54,21 @@ private Timer timer;
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(LandscapeActivity.this, sensor, sensorManager.SENSOR_DELAY_UI);
 
-
-
-      //  timer = new Timer();
-      //  TimerTask task = new TimerTask() {
-      //      @Override
-      //      public void run() {//         startRequestTimer();
-      //      }
-        // };
-       // timer.schedule(task, 0, 5000);
-
         actualizarDistanciaThread = new Thread(new ActualizarDistanciaThread());
         actualizarDistanciaThread.start();
 
     }
-
-    public void startRequestTimer(){
-        try {
-            bluetoothService.write("D");
-            txtDistancia.setText(bluetoothService.getDistancia() + " cm");
-
-        } catch (Exception e) {
-            Log.i("err3", e.getMessage());
-        }
-    }
-
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
+    public void onSensorChanged(SensorEvent sensorEvent)
+    {
         float x = sensorEvent.values[0];
         float y = sensorEvent.values[1];
         float z = sensorEvent.values[2];
 
         if(!isPortrait && (x >= UMBRAL_ACELEROMETRO_MENOR_DESDE && x <= UMBRAL_ACELEROMETRO_MENOR_HASTA)
-                && (y >= UMBRAL_ACELEROMETRO_MAYOR_DESDE && y <= UMBRAL_ACELEROMETRO_MAYOR_HASTA)) {
-
+                && (y >= UMBRAL_ACELEROMETRO_MAYOR_DESDE && y <= UMBRAL_ACELEROMETRO_MAYOR_HASTA))
+        {
             isPortrait = true;
-            //timer.cancel();
             Intent intent = new Intent(LandscapeActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -97,13 +77,16 @@ private Timer timer;
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
+    public void onAccuracyChanged(Sensor sensor, int i)
+    {
 
     }
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private ServiceConnection serviceConnection = new ServiceConnection()
+    {
         @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder)
+        {
             BluetoothService.MyLocalBinder binder = (BluetoothService.MyLocalBinder) iBinder;
             bluetoothService = binder.getBoundService();
             isConnected = true;
@@ -111,37 +94,42 @@ private Timer timer;
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName componentName) {
+        public void onServiceDisconnected(ComponentName componentName)
+        {
             isConnected = false;
         }
     };
 
-    public class ActualizarDistanciaThread implements Runnable {
+    public class ActualizarDistanciaThread implements Runnable
+    {
         String distancia;
-        public ActualizarDistanciaThread(){
+        public ActualizarDistanciaThread()
+        {
 
         }
         @Override
-        public void run() {
-            // Código que se ejecutará en el Thread
-            while(true){
+        public void run()
+        {
+            while(true)
+            {
                 distancia = bluetoothService.getDistancia() + " cm";
-                runOnUiThread(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      // Código para actualizar la UI
-                                      txtDistancia.setText(distancia);
-                                  }
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        txtDistancia.setText(distancia);
+                    }
                 });
-                try {
+                try
+                {
                     Thread.sleep(2000);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e)
+                {
                     throw new RuntimeException(e);
                 }
             }
-
-            // Actualizar la interfaz de usuario (UI) desde el hilo principal
-
 
         }
     }

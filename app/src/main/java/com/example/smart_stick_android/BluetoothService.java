@@ -20,7 +20,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-public class BluetoothService extends Service {
+public class BluetoothService extends Service
+{
     static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     final int handlerState = 0;
     private ConnectedThread mConnectedThread;
@@ -33,7 +34,8 @@ public class BluetoothService extends Service {
 
     MyLocalBinder localBinder = new MyLocalBinder();
 
-    public void polling(){
+    public void polling()
+    {
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -43,29 +45,34 @@ public class BluetoothService extends Service {
         },0,5000);
     }
 
-    public void stop_polling(){
+    public void stop_polling()
+    {
         timer.cancel();
     }
 
-    public void write(String data) {
+    public void write(String data)
+    {
         this.mConnectedThread.write(data);
     }
-    public String getDistancia() {return this.distancia;}
+    public String getDistancia()
+    {
+        return this.distancia;
+    }
 
-    public boolean getBuzzerActivado(){
+    public boolean getBuzzerActivado()
+    {
         return this.buzzerActivado;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startid){
-
+    public int onStartCommand(Intent intent, int flags, int startid)
+    {
         bluetoothIn = Handler_Msg_Hilo_Principal();
-
-
         Bundle addressExtra = intent.getExtras();
         String address = (String) addressExtra.get(DispositivosVinculadosActivity.EXTRA_DEVICE_ADDRESS);
 
-        try {
+        try
+        {
             BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 
             BluetoothDevice device = btAdapter.getRemoteDevice(address);
@@ -75,9 +82,13 @@ public class BluetoothService extends Service {
             mConnectedThread = new ConnectedThread(btSocket);
             mConnectedThread.start();
 
-        } catch (SecurityException ex) {
+        }
+        catch (SecurityException ex)
+        {
             Log.i("err", ex.getMessage());
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             Log.i("err2", e.getMessage());
         }
 
@@ -86,7 +97,8 @@ public class BluetoothService extends Service {
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
         return localBinder;
     }
 
@@ -94,13 +106,13 @@ public class BluetoothService extends Service {
     {
         return new Handler() {
             public void handleMessage(android.os.Message msg) {
-                //si se recibio un msj del hilo secundario
-                if (msg.what == handlerState) {
-                    //voy concatenando el msj
+                if (msg.what == handlerState)
+                {
                     String readMessage = (String) msg.obj;
                     String[] comando_completo = readMessage.split("_");
 
-                    if(comando_completo.length == 2) {
+                    if(comando_completo.length == 2)
+                    {
                         String evento = comando_completo[0];
                         String valor = comando_completo[1];
 
@@ -116,7 +128,9 @@ public class BluetoothService extends Service {
                                 break;
                         }
 
-                    }else{
+                    }
+                    else
+                    {
                         Log.i("BluetoothService","invalid command");
                     }
                 }
@@ -173,9 +187,9 @@ public class BluetoothService extends Service {
 
         //write method
         public void write(String input) {
-            byte[] msgBuffer = input.getBytes();           //converts entered String into bytes
+            byte[] msgBuffer = input.getBytes();
             try {
-                mmOutStream.write(msgBuffer);                //write bytes over BT connection via outstream
+                mmOutStream.write(msgBuffer);
             } catch (IOException e) {
                 //if you cannot write, close the application
                 Log.e("error tread", "conexion falló");
@@ -185,7 +199,8 @@ public class BluetoothService extends Service {
 
     public class MyLocalBinder extends Binder{
 
-        BluetoothService getBoundService(){
+        BluetoothService getBoundService()
+        {
             return BluetoothService.this;
         }
     }
